@@ -55,10 +55,10 @@ object Evaluator{
     case Ex(_: InvEx, _: InitEx, AmmoniteExit(value))  => Res.Exit(value)
 
     // Interrupted during pretty-printing
-    case Ex(e: ThreadDeath)                 =>  interrupted(e)
+    case Ex(e: ThreadDeath, res@_*)                    =>  interrupted(e)
 
     // Interrupted during evaluation
-    case Ex(_: InvEx, e: ThreadDeath)       =>  interrupted(e)
+    case Ex(_: InvEx, e: ThreadDeath, rest@_*)         =>  interrupted(e)
 
     case Ex(_: InvEx, _: InitEx, userEx@_*) => Res.Exception(userEx(0), "")
     case Ex(_: InvEx, userEx@_*)            => Res.Exception(userEx(0), "")

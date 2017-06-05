@@ -81,10 +81,7 @@ class Repl(input: InputStream,
 
   def action() = for{
     _ <- Catching {
-      case Ex(e: ThreadDeath) =>
-        Thread.interrupted()
-        Res.Failure("Interrupted!")
-
+      case e: ThreadDeath => Evaluator.interrupted(e)
       case ex => Res.Exception(ex, "")
     }
 
