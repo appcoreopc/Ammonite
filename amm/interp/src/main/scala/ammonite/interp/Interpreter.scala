@@ -201,9 +201,7 @@ class Interpreter(val printer: Printer,
     )
     val (hookStmts, importTrees) = parseImportHooks(codeSource, stmts)
     for{
-      _ <- Catching { case ex =>
-        Res.Exception(ex, "")
-      }
+      _ <- Catching { case ex => Res.Exception(ex, "") }
       ImportHookInfo(hookImports, hookStmts, _) <- resolveImportHooks(
         importTrees,
         hookStmts,
@@ -321,6 +319,11 @@ class Interpreter(val printer: Printer,
                   .zip(scriptOutput.processed.blockInfo)
                   .map(Some(_))
               )
+          }
+
+          _ <- Catching { case ex =>
+            pprint.log(ex.getStackTrace.length)
+            Res.Exception(ex, "")
           }
 
           data <- processAllScriptBlocks(
